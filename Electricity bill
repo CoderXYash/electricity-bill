@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electricity Bill Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+        }
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #invoice-output {
+            margin-top: 30px;
+            border-top: 2px solid #ccc;
+            padding-top: 20px;
+            display: none; /* Hidden by default */
+        }
+        #invoice-output h2 {
+            margin-top: 0;
+        }
+        #invoice-output p {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        #invoice-output .total {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007BFF;
+            margin-top: 20px;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Electricity Bill Calculator</h1>
+    <form id="billForm">
+        <div class="form-group">
+            <label for="customerName">Customer Name:</label>
+            <input type="text" id="customerName" required>
+        </div>
+        <div class="form-group">
+            <label for="lastMonthUnit">Last Month's Unit:</label>
+            <input type="number" id="lastMonthUnit" required>
+        </div>
+        <div class="form-group">
+            <label for="currentMonthUnit">Current Month's Unit:</label>
+            <input type="number" id="currentMonthUnit" required>
+        </div>
+        <div class="form-group">
+            <label for="perUnitCharge">Per Unit Charge (₹):</label>
+            <input type="number" id="perUnitCharge" step="0.01" required>
+        </div>
+        <button type="submit">Generate Bill</button>
+    </form>
+
+    <div id="invoice-output">
+        <h2 id="invoice-heading"></h2>
+        <p><strong>Units Consumed:</strong> <span id="units-consumed"></span></p>
+        <p><strong>Per Unit Charge:</strong> ₹<span id="per-unit-charge-display"></span></p>
+        <p class="total"><strong>Total Bill:</strong> ₹<span id="total-bill-display"></span></p>
+    </div>
+</div>
+
+<script>
+    document.getElementById('billForm').addEventListener('submit', function(event) {
+        // Prevent the form from submitting the traditional way
+        event.preventDefault();
+
+        // Get input values from the form
+        const customerName = document.getElementById('customerName').value;
+        const lastMonthUnits = parseFloat(document.getElementById('lastMonthUnit').value);
+        const currentMonthUnits = parseFloat(document.getElementById('currentMonthUnit').value);
+        const perUnitCharge = parseFloat(document.getElementById('perUnitCharge').value);
+
+        // Perform calculation
+        const unitsConsumed = currentMonthUnits - lastMonthUnits;
+        const totalBill = unitsConsumed * perUnitCharge;
+
+        // Input validation
+        if (unitsConsumed < 0) {
+            alert("Error: Current month's reading cannot be less than last month's reading.");
+            document.getElementById('invoice-output').style.display = 'none'; // Hide the output if there's an error
+            return;
+        }
+
+        // Display the results in the invoice section
+        document.getElementById('invoice-heading').textContent = `Electricity Bill for ${customerName}`;
+        document.getElementById('units-consumed').textContent = unitsConsumed.toFixed(2);
+        document.getElementById('per-unit-charge-display').textContent = perUnitCharge.toFixed(2);
+        document.getElementById('total-bill-display').textContent = totalBill.toFixed(2);
+        
+        // Make the output section visible
+        document.getElementById('invoice-output').style.display = 'block';
+    });
+</script>
+
+</body>
+</html>
